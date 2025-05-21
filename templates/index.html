@@ -18,10 +18,36 @@
       box-sizing: border-box;
     }
 
-    #respuesta {
-      margin-top: 20px;
-      color: green;
-      font-weight: bold;
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .cerrar {
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .cerrar:hover {
+      color: black;
     }
   </style>
 </head>
@@ -30,29 +56,37 @@
 
   <form id="sensorForm">
     <label for="sensor_id">Sensor ID:</label>
-    <input type="text" id="sensor_id" name="sensor_id" value="mi sensor postman render Veronica" required />
+    <input type="text" id="sensor_id" name="sensor_id" value="" required />
 
     <label for="temperature">Temperatura:</label>
-    <input type="number" step="any" id="temperature" name="temperature" value="25.6" required />
+    <input type="number" step="any" id="temperature" name="temperature" value="" required />
 
     <label for="vibration">Vibración:</label>
-    <input type="number" step="any" id="vibration" name="vibration" value="0.123" required />
+    <input type="number" step="any" id="vibration" name="vibration" value="" required />
 
     <label for="status">Estado:</label>
     <select id="status" name="status">
-      <option value="normal">Normal</option>
-      <option value="alerta">Alerta</option>
-      <option value="error">Error</option>
+      <option value="Normal">Normal</option>
+      <option value="Alerta">Alerta</option>
+      <option value="Error">Error</option>
     </select>
 
     <button type="submit">Enviar datos</button>
   </form>
 
-  <div id="respuesta"></div>
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="cerrar-modal" class="cerrar">&times;</span>
+      <p id="mensaje-modal"></p>
+    </div>
+  </div>
 
   <script>
     const form = document.getElementById("sensorForm");
-    const respuestaDiv = document.getElementById("respuesta");
+    const modal = document.getElementById("modal");
+    const mensajeModal = document.getElementById("mensaje-modal");
+    const cerrarModal = document.getElementById("cerrar-modal");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -72,10 +106,22 @@
         });
 
         const result = await response.json();
-        respuestaDiv.innerText = result.mensaje;
+        mensajeModal.textContent = "✅" + result.mensaje;
+        modal.style.display = "block";
 
       } catch (error) {
-        respuestaDiv.innerText = "⚠️ Error de conexión: " + error.message;
+        mensajeModal.textContent = "⚠️ Error de conexión: " + error.message;
+        modal.style.display = "block";
+      }
+    });
+
+    cerrarModal.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
       }
     });
   </script>

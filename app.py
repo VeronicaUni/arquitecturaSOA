@@ -21,7 +21,7 @@ def enviar():
         print("Texto:", response.text)
 
         if response.status_code in [200, 201]:
-            return jsonify({"mensaje": "Datos enviados correctamente"}), 200
+            return jsonify({"mensaje": " Datos enviados correctamente"}), 200
         else:
             return jsonify({"mensaje": f"Error al enviar los datos. Código {response.status_code}"}), 500
     except Exception as e:
