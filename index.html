@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulario Sensor - Verónica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+
+    #respuesta {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Formulario de Envío de Sensor</h2>
+
+  <form id="sensorForm">
+    <label for="sensor_id">Sensor ID:</label>
+    <input type="text" id="sensor_id" name="sensor_id" value="mi sensor postman render" required />
+
+    <label for="temperature">Temperatura:</label>
+    <input type="number" step="any" id="temperature" name="temperature" value="25.6" required />
+
+    <label for="vibration">Vibración:</label>
+    <input type="number" step="any" id="vibration" name="vibration" value="0.123" required />
+
+    <label for="status">Estado:</label>
+    <select id="status" name="status">
+      <option value="normal">Normal</option>
+      <option value="alerta">Alerta</option>
+      <option value="error">Error</option>
+    </select>
+
+    <button type="submit">Enviar datos</button>
+  </form>
+
+  <div id="respuesta"></div>
+
+  <script>
+    const form = document.getElementById("sensorForm");
+    const respuestaDiv = document.getElementById("respuesta");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        sensor_id: document.getElementById("sensor_id").value,
+        temperature: document.getElementById("temperature").value,
+        vibration: document.getElementById("vibration").value,
+        status: document.getElementById("status").value
+      };
+
+      try {
+        const response = await fetch("https://data-processor-v27b.onrender.com/api/data", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          respuestaDiv.innerText = "✅ Datos enviados correctamente.";
+        } else {
+          respuestaDiv.innerText = "❌ Error al enviar los datos.";
+        }
+      } catch (error) {
+        respuestaDiv.innerText = "⚠️ Error de conexión: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
